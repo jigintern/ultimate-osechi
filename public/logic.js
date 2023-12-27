@@ -16,3 +16,5 @@ class Field{
         this.cells = cells;
     }
 }
+
+export { Cell, Field, Mino };
