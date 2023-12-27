@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <title>ようこそ、jigインターンへ！</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        height: 100vh;
+        width: 100%;
+      }
+      body {
+        display: grid;
+        place-content: center;
+      }
+    </style>
+    <script type="module">
+      const message = await fetch("/welcome-message");
+      document.querySelector(
+        "body"
+      ).innerHTML = `<h1>${await message.text()}</h1>`;
+    </script>
+  </head>
+  <body></body>
+</html>
