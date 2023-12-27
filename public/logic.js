@@ -9,6 +9,10 @@ class Mino{
     constructor(cells){
         //二次元配列
         this.cells = cells;
-
+    }
+}
+class Field{
+    constructor(cells){
+        this.cells = cells;
     }
 }
