@@ -74,6 +74,15 @@ class Field {
     combo.sort((a, b) => {
       return b.length - a.length;
     });
+    //comboをy,x座標に変換
+    for (let i = 0; i < combo.length; i++) {
+      for (let j = 0; j < combo[i].length; j++) {
+        combo[i][j] = new Coordinate(
+          Math.floor(combo[i][j] / this.cells[0].length),
+          combo[i][j] % this.cells[0].length
+        );
+      }
+    }
     return combo;
   }
   score(combo) {
@@ -86,7 +95,12 @@ class Field {
     return score;
   }
 }
-
+class Coordinate{
+    constructor(y,x){
+        this.x=x;
+        this.y=y;
+    }
+}
 class UnionFind {
   //GPT製のUnionFind
   constructor(size) {
@@ -136,13 +150,7 @@ let testfunc = () => {
   let field = new Field(cells);
   let combo = field.combo_check(); //連結部分を描画で光らせる時は、この配列を使うといいかもしれません
   console.log(combo);
-  /*
-    [3, 4, 5, 7]
-    [1, 2]
-    [0]
-    [6]
-   */
   console.log(field.score(combo)); //18点
 };
-//testfunc();
-export { Cell, Field, Mino };
+testfunc();
+export { Cell, Field, Mino ,Coordinate};
