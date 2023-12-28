@@ -23,15 +23,31 @@ body {
 }
 #timer {
   font-size: xx-large;
-  margin-right: auto;
   display: flex;
-  margin-left: 60px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
 }
 #score_timer_bar {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
   background-color: aliceblue;
 }
+#help {
+  height: 40px;
+  width: 40px;
+  background-image: url(./assets/お皿.png);
+  margin-left: var(--cellWidth);
+  margin-right: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--modal);
+  font-size: xx-large;
+  font-weight: 900;
+}
+
 #modal-black {
   background-color: rgba(0, 0, 0, 0.5);
   width: 100vw;
@@ -40,6 +56,7 @@ body {
   position: fixed;
   left: 0;
 }
+
 #modal-title {
   position: fixed;
   z-index: 2;
@@ -95,20 +112,45 @@ body {
   display: none !important;
 }
 #modal-retry {
-    position: fixed;
-    z-index: 2;
-    width: 660px;
-    height: 500px;
-    background-color: var(--modal);
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    margin: auto;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-  }
+  position: fixed;
+  z-index: 2;
+  width: 660px;
+  height: 500px;
+  background-color: var(--modal);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+#modal-help {
+  position: fixed;
+  z-index: 2;
+  width: 660px;
+  height: 750px;
+  background-color: var(--modal);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.help-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
