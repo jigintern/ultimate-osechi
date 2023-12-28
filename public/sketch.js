@@ -60,16 +60,6 @@ function score_draw(field) {
   document.getElementById("score").innerHTML = score;
 }
 
-let testfunc = () => {
-  let cells = [
-    [new Cell(0, 0), new Cell(1, 2), new Cell(2, 2)],
-    [new Cell(0, 1), new Cell(1, 1), new Cell(2, 1)],
-    [new Cell(0, 2), new Cell(0, 1), new Cell(-1, -1)],
-  ];
-  let field = new Field(cells);
-  score_draw(field);
-};
-
 window.mouseClicked = () => {
   minoList.forEach((m) => {
     const cells = m.cells;
@@ -110,3 +100,13 @@ function drawMino(mino, size) {
     }
   }
 }
+
+let testfunc = () => {
+  let cells = [
+    [new Cell(0, 0), new Cell(1, 2), new Cell(2, 2)],
+    [new Cell(0, 1), new Cell(1, 1), new Cell(2, 1)],
+    [new Cell(0, 2), new Cell(0, 1), new Cell(-1, -1)],
+  ];
+  let field = new Field(cells);
+  score_draw(field);
+};
