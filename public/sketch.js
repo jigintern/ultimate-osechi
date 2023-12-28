@@ -106,9 +106,8 @@ function score_draw(field) {
   let score = field.score();
   document.getElementById("score").innerHTML = score;
 
-  document.querySelector("#modal-retry .modal-body").innerHTML =score;
+  document.querySelector("#modal-retry .modal-body").innerHTML = score;
 }
-
 
 window.mouseClicked = () => {
   updateSelectMinoFrom(mouseX, mouseY);
@@ -123,6 +122,19 @@ window.mouseClicked = () => {
         const fieldCell =
           field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
 
+        if (fieldCell.cellId !== -1) {
+          // すでにフィールドに置かれている
+          return;
+        }
+      }
+    }
+
+    for (let y = 0; y < selectMino.cells.length; y++) {
+      for (let x = 0; x < selectMino.cells[0].length; x++) {
+        const minoCell = selectMino.cells[y][x];
+        if (minoCell.cellId === -1) continue;
+        const fieldCell =
+          field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
         fieldCell.parentMinoId = selectMino.id;
         fieldCell.cellId = minoCell.cellId;
       }
