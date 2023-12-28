@@ -95,16 +95,13 @@ function draw_frame(cell, size, R, G, B) {
 }
 
 function setupCellPosition() {
-  console.table(field);
-
-  console.table(field.cells);
   for (let y = 0; y < YSIZE; ++y) {
     for (let x = 0; x < XSIZE; ++x) {
       field.cells[y * YSIZE + x] = new Cell(
         -1,
         -1,
         (x + MARGIN) * SCALE,
-        y * SCALE + 1
+        (y + MARGIN / 2) * SCALE + 1
       );
     }
   }
@@ -193,7 +190,7 @@ function setMinoFrom(mx, my) {
         mx,
         my,
         (x + MARGIN) * SCALE + SCALE / 2,
-        y * SCALE + SCALE / 2
+        (y + MARGIN / 2) * SCALE + SCALE / 2
       );
 
       if (d < SCALE / 2) {
@@ -260,7 +257,7 @@ function drawMino(mino, size) {
 function drawField() {
   strokeWeight(30);
   stroke(5);
-  rect(MARGIN * SCALE, 0, XSIZE * SCALE, YSIZE * SCALE);
+  rect(MARGIN * SCALE, (MARGIN / 2) * SCALE, XSIZE * SCALE, YSIZE * SCALE);
   for (let y = 0; y < YSIZE; ++y) {
     for (let x = 0; x < XSIZE; ++x) {
       const cell = field.cells[y * YSIZE + x];
