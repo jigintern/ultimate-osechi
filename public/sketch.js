@@ -1,16 +1,10 @@
+import { createMinoList } from "./createMinoList.js";
 import { Cell, Coordinate, Field } from "./logic.js";
-import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 import { initModal } from "./modal.js";
 
 let selectMino = null;
 let drawCombo_count = 0;
-let minoList = [
-  new IMino(new Cell(1, 0)),
-  new OMino(new Cell(1, 1)),
-  new LMino(new Cell(1, 2)),
-  new SMino(new Cell(1, 1)),
-  new TMino(new Cell(1, 1)),
-];
+let minoList = createMinoList(30);
 initModal();
 export const XSIZE = 10;
 export const YSIZE = 10;
@@ -117,15 +111,16 @@ function setupCellPosition() {
 }
 
 function setupMinoListPosition() {
-  const rowLength = 5;
+  const rowLength = 8;
   for (let i = 0; i < minoList.length; i++) {
     const mino = minoList[i];
     const index = i % rowLength;
+    const padding = VIEW_SCALE;
+
     if (index == 0) {
-      mino.x = 0;
+      mino.x = padding;
     } else {
       const prevMino = minoList[index - 1];
-      const padding = VIEW_SCALE;
 
       mino.x = prevMino.x + prevMino.cells[0].length * VIEW_SCALE + padding;
     }
@@ -168,6 +163,7 @@ function pushFieldFromSelectMino() {
       }
     }
 
+    // フィールドに置く
     for (let y = 0; y < selectMino.cells.length; y++) {
       for (let x = 0; x < selectMino.cells[0].length; x++) {
         const minoCell = selectMino.cells[y][x];
@@ -181,6 +177,10 @@ function pushFieldFromSelectMino() {
     //2秒間だけdrawComboを呼び出す
     drawCombo_count = 2000;
     field.combo = field.combo_check();
+    // リストから消す
+    minoList = minoList.filter((e) => e.id !== selectMino.id);
+    // 選択を消す
+    selectMino = null;
   }
 
   score_draw(field);
@@ -241,20 +241,18 @@ function drawMino(mino, size) {
       const cell = cells[y][x];
       if (cell.cellId === -1) continue;
 
-      image(
-        Images[imageFiles.length - 1],
-        x * size + mino.x,
-        y * size + mino.y,
-        size,
-        size
-      );
-      image(
-        Images[cell.cellId],
-        x * size + mino.x,
-        y * size + mino.y,
-        size,
-        size
-      );
+      const pos = new Coordinate(y * size + mino.y, x * size + mino.x);
+      if (selectMino !== null && mino.id === selectMino.id) {
+        const borderSize = 4;
+        strokeWeight(borderSize);
+        stroke(0, 200, 0);
+        rect(pos.x, pos.y, size);
+        stroke(0);
+        strokeWeight(1);
+      }
+
+      image(Images[imageFiles.length - 1], pos.x, pos.y, size, size);
+      image(Images[cell.cellId], pos.x, pos.y, size, size);
     }
   }
 }

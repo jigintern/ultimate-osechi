@@ -1,7 +1,9 @@
 import { XSIZE,YSIZE } from "./sketch.js";
 class Cell {
   //-1,-1 空白
+  //x, -2 random
   constructor(parentMinoId, cellId, x, y) {
+    if (cellId === -2) cellId = Math.floor(Math.random() * 15);
     this.parentMinoId = parentMinoId;
     this.cellId = cellId;
     this.x = x;
