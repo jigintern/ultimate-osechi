@@ -18,6 +18,17 @@ body {
     margin-left: auto;
     display: flex;
 }
+#timer {
+    font-size: xx-large;
+    margin-right: auto;
+    display: flex;
+    margin-left: 60px;
+}
+#score_timer_bar {
+    display: flex;
+    justify-content: space-between;
+    background-color: aliceblue;
+}
 #modal-black {
     background-color: rgba(0, 0, 0, 0.5);
     width: 100vw;
