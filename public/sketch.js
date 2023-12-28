@@ -1,15 +1,10 @@
 import { Cell, Coordinate, Field, Mino } from "./logic.js";
 import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 import { initModal } from "./modal.js";
+import { createMinoList } from "./createMinoList.js";
 
 let selectMino = new Mino(new Cell(1, 2));
-let minoList = [
-  new IMino(new Cell(1, 0)),
-  new OMino(new Cell(1, 1)),
-  new LMino(new Cell(1, 2)),
-  new SMino(new Cell(1, 1)),
-  new TMino(new Cell(1, 1)),
-];
+let minoList = createMinoList(30);
 initModal();
 const XSIZE = 10;
 const YSIZE = 10;
@@ -106,9 +101,8 @@ function score_draw(field) {
   let score = field.score();
   document.getElementById("score").innerHTML = score;
 
-  document.querySelector("#modal-retry .modal-body").innerHTML =score;
+  document.querySelector("#modal-retry .modal-body").innerHTML = score;
 }
-
 
 window.mouseClicked = () => {
   updateSelectMinoFrom(mouseX, mouseY);
