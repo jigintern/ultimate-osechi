@@ -137,7 +137,8 @@ function score_draw(field) {
     "SCORE: " + score;
 }
 
-window.mouseClicked = () => {
+window.mouseClicked = (e) => {
+  if (e.target !== canvas) return;
   updateSelectMinoFrom(mouseX, mouseY);
 
   pushFieldFromSelectMino();
