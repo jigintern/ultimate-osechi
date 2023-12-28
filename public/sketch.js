@@ -11,8 +11,8 @@ let minoList = [
   new TMino(new Cell(1, 1)),
 ];
 initModal();
-const XSIZE = 10;
-const YSIZE = 10;
+export const XSIZE = 10;
+export const YSIZE = 10;
 const SCALE = 60;
 const MARGIN = 1;
 
@@ -128,6 +128,7 @@ window.mouseClicked = () => {
       }
     }
   }
+  score_draw(field);
 };
 
 function setMinoFrom(mx, my) {
