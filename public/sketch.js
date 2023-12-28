@@ -42,9 +42,8 @@ window.preload = () => {
   }
 };
 
-let cellIdCount = 0;
 let field = new Field(
-  new Array(YSIZE).fill(new Array(XSIZE).fill()).map((_) => new Cell(-1, -1))
+  new Array(YSIZE * XSIZE).fill().map((_) => new Cell(-1, -1, -1, -1))
 );
 
 window.setup = () => {
@@ -70,9 +69,17 @@ window.draw = () => {
 };
 
 function setupCellPosition() {
+  console.table(field);
+
+  console.table(field.cells);
   for (let y = 0; y < YSIZE; ++y) {
     for (let x = 0; x < XSIZE; ++x) {
-      field.cells[y][x] = new Cell(-1, -1, (x + MARGIN) * SCALE, y * SCALE + 1);
+      field.cells[y * YSIZE + x] = new Cell(
+        -1,
+        -1,
+        (x + MARGIN) * SCALE,
+        y * SCALE + 1
+      );
     }
   }
 }
@@ -110,16 +117,16 @@ window.mouseClicked = () => {
   if (tapPosition !== null) {
     for (let y = 0; y < selectMino.cells.length; y++) {
       for (let x = 0; x < selectMino.cells[0].length; x++) {
-        const fieldCell = field.cells[tapPosition.y + y][tapPosition.x + x];
         const minoCell = selectMino.cells[y][x];
-
         if (minoCell.cellId === -1) continue;
 
+        const fieldCell =
+          field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
+
         fieldCell.parentMinoId = selectMino.id;
-        fieldCell.cellId = cellIdCount;
+        fieldCell.cellId = minoCell.cellId;
       }
     }
-    cellIdCount++;
   }
 };
 
@@ -187,7 +194,7 @@ function drawMino(mino, size) {
 function drawField() {
   for (let y = 0; y < YSIZE; ++y) {
     for (let x = 0; x < XSIZE; ++x) {
-      const cell = field.cells[y][x];
+      const cell = field.cells[y * YSIZE + x];
 
       drawCell(cell, SCALE);
     }
@@ -199,8 +206,7 @@ function drawCell(cell, size) {
   rect(cell.x, cell.y, size);
 
   if (cell.cellId !== -1) {
-    fill(10);
-    text(cell.cellId, cell.x + SCALE / 2, cell.y + SCALE / 2);
+    image(Images[cell.cellId], cell.x, cell.y, size, size);
   }
   fill(255);
 }
