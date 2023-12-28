@@ -115,13 +115,13 @@ body {
   position: fixed;
   z-index: 2;
   width: 660px;
-  height: 500px;
+  height: 170px;
   background-color: var(--modal);
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
-  margin: auto;
+  margin: 695px auto;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
