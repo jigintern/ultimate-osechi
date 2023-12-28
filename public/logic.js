@@ -66,9 +66,6 @@ class Field {
     for (let y = 0; y < YSIZE; y++) {
       for (let x = 0; x < XSIZE; x++) {
         if (this.cells[y*XSIZE+x].parentMinoId == -1) continue;
-
-        console.log(uf.find(y * XSIZE + x));
-        console.log(combo.length);
         combo[uf.find(y * XSIZE + x)].push(
           new Coordinate(y, x)
         );
