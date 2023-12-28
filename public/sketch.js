@@ -28,6 +28,7 @@ const imageFiles = [
   "田作り.png",
   "八幡巻き.png",
   "蓮根.png",
+  "お皿.png",
 ];
 
 let Images = [];
@@ -200,6 +201,14 @@ function drawMino(mino, size) {
     for (let x = 0; x < cells[y].length; ++x) {
       const cell = cells[y][x];
       if (cell.cellId === -1) continue;
+
+      image(
+        Images[imageFiles.length - 1],
+        x * size + mino.x,
+        y * size + mino.y,
+        size,
+        size
+      );
       image(
         Images[cell.cellId],
         x * size + mino.x,
@@ -226,6 +235,7 @@ function drawCell(cell, size) {
   rect(cell.x, cell.y, size);
 
   if (cell.cellId !== -1) {
+    image(Images[imageFiles.length - 1], cell.x, cell.y, size, size);
     image(Images[cell.cellId], cell.x, cell.y, size, size);
   }
   fill(255);
