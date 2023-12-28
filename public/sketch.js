@@ -3,6 +3,7 @@ import { Cell, Coordinate, Field } from "./logic.js";
 import { initModal } from "./modal.js";
 
 let selectMino = null;
+let drawCombo_count = 0;
 let minoList = createMinoList(30);
 initModal();
 export const XSIZE = 10;
@@ -11,6 +12,7 @@ const SCALE = 60;
 const MARGIN = 1;
 
 const VIEW_SCALE = 20;
+
 const imageFiles = [
   "えび.png",
   "かまぼこ.png",
@@ -56,6 +58,8 @@ window.draw = () => {
 
   drawField();
 
+  drawCombo(field.combo);
+
   if (selectMino !== null) {
     selectMino.x = mouseX - SCALE / 2;
     selectMino.y = mouseY - SCALE / 2;
@@ -64,6 +68,31 @@ window.draw = () => {
 
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
+
+function drawCombo(combo) {
+  /*コンボ部分を点滅させる*/
+  if (drawCombo_count < 0) return;
+  drawCombo_count -= deltaTime;
+  for (let i = 0; i < combo.length; i++) {
+    if (combo[i].length == 1) continue;
+    let R = 255;
+    let G = 255;
+    let B = 0;
+    for (let j = 0; j < combo[i].length; j++) {
+      let cell = field.cells[combo[i][j].y * YSIZE + combo[i][j].x];
+      draw_frame(cell, SCALE, R, G, B);
+    }
+  }
+}
+function draw_frame(cell, size, R, G, B) {
+  stroke(R, G, B, Math.sin(frameCount / 6) * 100 + 100); //
+  strokeWeight(3);
+  noFill();
+  rect(cell.x, cell.y, size);
+  strokeWeight(1);
+  stroke(0);
+  fill(255);
+}
 
 function setupCellPosition() {
   console.table(field);
@@ -82,15 +111,16 @@ function setupCellPosition() {
 }
 
 function setupMinoListPosition() {
-  const rowLength = 5;
+  const rowLength = 8;
   for (let i = 0; i < minoList.length; i++) {
     const mino = minoList[i];
     const index = i % rowLength;
+    const padding = VIEW_SCALE;
+
     if (index == 0) {
-      mino.x = 0;
+      mino.x = padding;
     } else {
       const prevMino = minoList[index - 1];
-      const padding = VIEW_SCALE;
 
       mino.x = prevMino.x + prevMino.cells[0].length * VIEW_SCALE + padding;
     }
@@ -144,11 +174,15 @@ function pushFieldFromSelectMino() {
         fieldCell.cellId = minoCell.cellId;
       }
     }
+    //2秒間だけdrawComboを呼び出す
+    drawCombo_count = 2000;
+    field.combo = field.combo_check();
     // リストから消す
     minoList = minoList.filter((e) => e.id !== selectMino.id);
     // 選択を消す
     selectMino = null;
   }
+
   score_draw(field);
 }
 
@@ -207,20 +241,18 @@ function drawMino(mino, size) {
       const cell = cells[y][x];
       if (cell.cellId === -1) continue;
 
-      image(
-        Images[imageFiles.length - 1],
-        x * size + mino.x,
-        y * size + mino.y,
-        size,
-        size
-      );
-      image(
-        Images[cell.cellId],
-        x * size + mino.x,
-        y * size + mino.y,
-        size,
-        size
-      );
+      const pos = new Coordinate(y * size + mino.y, x * size + mino.x);
+      if (selectMino !== null && mino.id === selectMino.id) {
+        const borderSize = 4;
+        strokeWeight(borderSize);
+        stroke(0, 200, 0);
+        rect(pos.x, pos.y, size);
+        stroke(0);
+        strokeWeight(1);
+      }
+
+      image(Images[imageFiles.length - 1], pos.x, pos.y, size, size);
+      image(Images[cell.cellId], pos.x, pos.y, size, size);
     }
   }
 }
