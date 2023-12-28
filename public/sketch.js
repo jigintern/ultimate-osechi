@@ -1,7 +1,6 @@
-import { Cell, Coordinate, Field } from "./logic.js";
-import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
-import { initModal } from "./modal.js";
 import { createMinoList } from "./createMinoList.js";
+import { Cell, Coordinate, Field } from "./logic.js";
+import { initModal } from "./modal.js";
 
 let selectMino = null;
 let minoList = createMinoList(30);
@@ -102,11 +101,10 @@ function setupMinoListPosition() {
 
 function score_draw(field) {
   let score = field.score();
-  document.getElementById("score").innerHTML = "SCORE: "+score;
+  document.getElementById("score").innerHTML = "SCORE: " + score;
 
-
-  document.querySelector("#modal-retry .modal-body").innerHTML ="SCORE: "+score;
-
+  document.querySelector("#modal-retry .modal-body").innerHTML =
+    "SCORE: " + score;
 }
 
 window.mouseClicked = () => {
@@ -135,6 +133,7 @@ function pushFieldFromSelectMino() {
       }
     }
 
+    // フィールドに置く
     for (let y = 0; y < selectMino.cells.length; y++) {
       for (let x = 0; x < selectMino.cells[0].length; x++) {
         const minoCell = selectMino.cells[y][x];
@@ -145,6 +144,10 @@ function pushFieldFromSelectMino() {
         fieldCell.cellId = minoCell.cellId;
       }
     }
+    // リストから消す
+    minoList = minoList.filter((e) => e.id !== selectMino.id);
+    // 選択を消す
+    selectMino = null;
   }
   score_draw(field);
 }
