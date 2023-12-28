@@ -94,3 +94,21 @@ body {
 .hide {
   display: none !important;
 }
+#modal-retry {
+    position: fixed;
+    z-index: 2;
+    width: 660px;
+    height: 500px;
+    background-color: var(--modal);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
