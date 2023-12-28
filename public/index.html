@@ -6,6 +6,7 @@
     <title>究極のおせち</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
   </head>
   <body>
     <div id="container">
@@ -21,13 +22,22 @@
 
       <div id="modal-retry" class="hide">
         <div class="modal-header">GAME END</div>
-        <div class="modal-body" style="font-size: x-large;">SCORE: 0</div>
+        <div class="modal-body" style="font-size: x-large">SCORE: 0</div>
         <div class="modal-footer">
           <button>retry</button>
         </div>
       </div>
 
+      <div id="modal-help" class="hide">
+        <div class="modal-header">ヘルプ</div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button>ok</button>
+        </div>
+      </div>
+
       <div id="score_timer_bar">
+        <div id="help">?</div>
         <div id="timer">60sec</div>
         <div id="score">SCORE: 0</div>
       </div>
