@@ -1,15 +1,10 @@
 import { Cell, Coordinate, Field } from "./logic.js";
 import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 import { initModal } from "./modal.js";
+import { createMinoList } from "./createMinoList.js";
 
 let selectMino = null;
-let minoList = [
-  new IMino(new Cell(1, 0)),
-  new OMino(new Cell(1, 1)),
-  new LMino(new Cell(1, 2)),
-  new SMino(new Cell(1, 1)),
-  new TMino(new Cell(1, 1)),
-];
+let minoList = createMinoList(30);
 initModal();
 export const XSIZE = 10;
 export const YSIZE = 10;

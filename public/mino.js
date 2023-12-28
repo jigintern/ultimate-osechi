@@ -3,19 +3,27 @@ import { Cell, Mino } from "./logic.js";
 const emptyCell = new Cell(-1, -1);
 
 class IMino extends Mino {
-  constructor(cell) {
-    const x = cell;
-    super([[x, x, x, x]], 1);
+  constructor(parentId) {
+    super(
+      [
+        [
+          new Cell(parentId, -2),
+          new Cell(parentId, -2),
+          new Cell(parentId, -2),
+          new Cell(parentId, -2),
+        ],
+      ],
+      1
+    );
   }
 }
 
 class OMino extends Mino {
-  constructor(cell) {
-    const x = cell;
+  constructor(parentId) {
     super(
       [
-        [x, x],
-        [x, x],
+        [new Cell(parentId, -2), new Cell(parentId, -2)],
+        [new Cell(parentId, -2), new Cell(parentId, -2)],
       ],
       2
     );
@@ -23,28 +31,26 @@ class OMino extends Mino {
 }
 
 class LMino extends Mino {
-  constructor(cell) {
+  constructor(parentId) {
     const o = emptyCell;
-    const x = cell;
     super(
       [
-        [x, o],
-        [x, o],
-        [x, x],
+        [new Cell(parentId, -2), o],
+        [new Cell(parentId, -2), o],
+        [new Cell(parentId, -2), new Cell(parentId, -2)],
       ],
       3
     );
   }
 }
 class SMino extends Mino {
-  constructor(cell) {
+  constructor(parentId) {
     const o = emptyCell;
-    const x = cell;
     super(
       [
-        [x, o],
-        [x, x],
-        [o, x],
+        [new Cell(parentId, -2), o],
+        [new Cell(parentId, -2), new Cell(parentId, -2)],
+        [o, new Cell(parentId, -2)],
       ],
       4
     );
@@ -52,13 +58,16 @@ class SMino extends Mino {
 }
 
 class TMino extends Mino {
-  constructor(cell) {
+  constructor(parentId) {
     const o = emptyCell;
-    const x = cell;
     super(
       [
-        [x, x, x],
-        [o, x, o],
+        [
+          new Cell(parentId, -2),
+          new Cell(parentId, -2),
+          new Cell(parentId, -2),
+        ],
+        [o, new Cell(parentId, -2), o],
       ],
       5
     );
