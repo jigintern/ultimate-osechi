@@ -13,7 +13,7 @@ class IMino extends Mino {
           new Cell(parentId, -2),
         ],
       ],
-      1
+      parentId
     );
   }
 }
@@ -25,7 +25,7 @@ class OMino extends Mino {
         [new Cell(parentId, -2), new Cell(parentId, -2)],
         [new Cell(parentId, -2), new Cell(parentId, -2)],
       ],
-      2
+      parentId
     );
   }
 }
@@ -39,7 +39,7 @@ class LMino extends Mino {
         [new Cell(parentId, -2), o],
         [new Cell(parentId, -2), new Cell(parentId, -2)],
       ],
-      3
+      parentId
     );
   }
 }
@@ -52,7 +52,7 @@ class SMino extends Mino {
         [new Cell(parentId, -2), new Cell(parentId, -2)],
         [o, new Cell(parentId, -2)],
       ],
-      4
+      parentId
     );
   }
 }
@@ -69,7 +69,7 @@ class TMino extends Mino {
         ],
         [o, new Cell(parentId, -2), o],
       ],
-      5
+      parentId
     );
   }
 }
