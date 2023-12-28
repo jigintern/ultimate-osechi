@@ -85,9 +85,10 @@ class Field {
     }
     return combo;
   }
-  score(combo) {
+  score() {
     //暫定の計算式　全ての連結集合に対して、(連結数-1)の二乗+連結数
     //孤立したセルは 1点 二個連結したセルは 2点 三個連結したセルは 5点 四個連結したセルは 10点
+    let combo = this.combo_check();
     let score = 0;
     for (let i = 0; i < combo.length; i++) {
       score += (combo[i].length - 1) * (combo[i].length - 1) + combo[i].length;
@@ -141,16 +142,5 @@ class UnionFind {
   }
 }
 
-let testfunc = () => {
-  let cells = [
-    [new Cell(0, 0), new Cell(1, 2), new Cell(2, 2)],
-    [new Cell(0, 1), new Cell(1, 1), new Cell(2, 1)],
-    [new Cell(0, 2), new Cell(0, 1), new Cell(-1, -1)],
-  ];
-  let field = new Field(cells);
-  let combo = field.combo_check(); //連結部分を描画で光らせる時は、この配列を使うといいかもしれません
-  console.log(combo);
-  console.log(field.score(combo)); //18点
-};
-testfunc();
+
 export { Cell, Field, Mino ,Coordinate};
