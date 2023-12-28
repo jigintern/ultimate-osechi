@@ -1,6 +1,11 @@
+:root {
+    --cellWidth: 60px;
+}
+
 body {
     display: flex;
     justify-content: center;
+    margin: 0;
 }
 #container {
     display: flex;
@@ -12,4 +17,64 @@ body {
     font-size: xx-large;
     margin-left: auto;
     display: flex;
+}
+#modal-black {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    position: fixed;
+    left: 0;
+}
+#modal-title {
+    position: fixed;
+    z-index: 2;
+    width: 660px;
+    height: 500px;
+    background-color: aqua;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+.modal-header {
+    height: var(--cellWidth);
+    font-size: calc(var(--cellWidth) / 2);
+    position: absolute;
+    margin-top: 10px;
+    top: 0;
+    display: flex;
+    align-items: center;
+}
+.modal-body {
+    width: 90%;
+    height: calc(100% - 140px);
+    background-color: antiquewhite;
+    border-radius: 20px;
+    padding: 10px;
+}
+.modal-footer {
+    height: var(--cellWidth);
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+}
+.modal-footer > button {
+    height: var(--cellWidth);
+    width: calc(var(--cellWidth) * 2);
+    border-radius: 10px;
+    font-size: large;
+    margin-bottom: 10px;
+}
+
+.hide {
+    display: none;
 }
