@@ -107,9 +107,11 @@ function setupMinoListPosition() {
 
 function score_draw(field) {
   let score = field.score();
-  document.getElementById("score").innerHTML = score;
+  document.getElementById("score").innerHTML = "SCORE: "+score;
 
-  document.querySelector("#modal-retry .modal-body").innerHTML = score;
+
+  document.querySelector("#modal-retry .modal-body").innerHTML ="SCORE: "+score;
+
 }
 
 window.mouseClicked = () => {
