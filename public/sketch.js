@@ -186,7 +186,11 @@ function updateSelectMinoFrom(mx, my) {
         );
 
         if (d <= VIEW_SCALE) {
-          selectMino = { ...m };
+          if (selectMino !== null && selectMino.id === m.id) {
+            selectMino = null;
+          } else {
+            selectMino = { ...m };
+          }
           return;
         }
       }
