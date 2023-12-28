@@ -20,6 +20,7 @@ class Mino {
 class Field {
   constructor(cells) {
     this.cells = cells;
+    this.combo=this.combo_check();
   }
   combo_check() {
     let dxdy = [
