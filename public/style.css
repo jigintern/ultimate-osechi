@@ -1,5 +1,8 @@
 :root {
     --cellWidth: 60px;
+    --button-height: 45px;
+    --modal: #dcdcdc;
+    --modal-body: rgb(236, 236, 236);
 }
 
 body {
@@ -42,7 +45,7 @@ body {
     z-index: 2;
     width: 660px;
     height: 500px;
-    background-color: aqua;
+    background-color: var(--modal);
     top: 0;
     bottom: 0;
     right: 0;
@@ -67,7 +70,7 @@ body {
 .modal-body {
     width: 90%;
     height: calc(100% - 140px);
-    background-color: antiquewhite;
+    background-color: var(--modal-body);
     border-radius: 20px;
     padding: 10px;
 }
@@ -79,13 +82,15 @@ body {
     align-items: center;
 }
 .modal-footer > button {
-    height: var(--cellWidth);
+    height: var(--button-height);
     width: calc(var(--cellWidth) * 2);
     border-radius: 10px;
     font-size: large;
     margin-bottom: 10px;
+    background-color: var(--modal-body);
+    border-color: var(--modal);
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }
