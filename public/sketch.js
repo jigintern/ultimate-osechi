@@ -258,6 +258,9 @@ function drawMino(mino, size) {
 }
 
 function drawField() {
+  strokeWeight(30);
+  stroke(5);
+  rect(MARGIN * SCALE, 0, XSIZE * SCALE, YSIZE * SCALE);
   for (let y = 0; y < YSIZE; ++y) {
     for (let x = 0; x < XSIZE; ++x) {
       const cell = field.cells[y * YSIZE + x];
@@ -268,8 +271,12 @@ function drawField() {
 }
 
 function drawCell(cell, size) {
-  fill(200);
+  fill(130, 10, 0);
+  strokeWeight(2);
+  stroke(10);
   rect(cell.x, cell.y, size);
+  strokeWeight(1);
+  stroke(0);
 
   if (cell.cellId !== -1) {
     image(Images[imageFiles.length - 1], cell.x, cell.y, size, size);
