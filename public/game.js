@@ -1,15 +1,17 @@
 import {Cell,Mino,Field,Coordinate} from "./logic.js";
-let time=60;
-function timer_start(){
+import { showRetry } from "./modal.js";
+
+export function timer_start(){
+    let time=10;
     function timer_update(){
         time--;
         document.getElementById("timer").innerHTML=time+"sec";
         if(time==0){
             clearInterval(timer);
             console.log("timeup");
-            //GameEnd();
+            showRetry();
         }
     }
     let timer=setInterval(timer_update,1000);
 }
-timer_start();
+
