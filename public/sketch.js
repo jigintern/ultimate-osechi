@@ -1,5 +1,6 @@
 import { Cell, Field, Mino } from "./logic.js";
 import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
+import { initModal } from "./modal.js";
 
 let selectMino = new Mino(new Cell(1, 2));
 let minoList = [
@@ -9,7 +10,7 @@ let minoList = [
   new SMino(new Cell(1, 1)),
   new TMino(new Cell(1, 1)),
 ];
-
+initModal();
 const XSIZE = 10;
 const YSIZE = 10;
 const SCALE = 60;
