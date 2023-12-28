@@ -1,16 +1,19 @@
 class Cell {
   //-1,-1 空白
-  constructor(parentMinoId, cellId) {
+  constructor(parentMinoId, cellId, x, y) {
     this.parentMinoId = parentMinoId;
     this.cellId = cellId;
+    this.x = x;
+    this.y = y;
   }
 }
 class Mino {
-  constructor(cells, x, y) {
+  constructor(cells, x, y, id) {
     //二次元配列
     this.cells = cells;
     this.x = x;
     this.y = y;
+    this.id = id;
   }
 }
 class Field {
@@ -98,11 +101,11 @@ class Field {
     return score;
   }
 }
-class Coordinate{
-    constructor(y,x){
-        this.x=x;
-        this.y=y;
-    }
+class Coordinate {
+  constructor(y, x) {
+    this.x = x;
+    this.y = y;
+  }
 }
 class UnionFind {
   //GPT製のUnionFind
@@ -144,5 +147,4 @@ class UnionFind {
   }
 }
 
-
-export { Cell, Field, Mino ,Coordinate};
+export { Cell, Coordinate, Field, Mino };
