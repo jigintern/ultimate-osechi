@@ -1,8 +1,8 @@
-import { Cell, Coordinate, Field, Mino } from "./logic.js";
+import { Cell, Coordinate, Field } from "./logic.js";
 import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 import { initModal } from "./modal.js";
 
-let selectMino = new Mino(new Cell(1, 2));
+let selectMino = null;
 let minoList = [
   new IMino(new Cell(1, 0)),
   new OMino(new Cell(1, 1)),
@@ -33,6 +33,7 @@ const imageFiles = [
   "田作り.png",
   "八幡巻き.png",
   "蓮根.png",
+  "お皿.png",
 ];
 
 let Images = [];
@@ -61,9 +62,11 @@ window.draw = () => {
 
   drawField();
 
-  selectMino.x = mouseX - SCALE / 2;
-  selectMino.y = mouseY - SCALE / 2;
-  drawMino(selectMino, SCALE);
+  if (selectMino !== null) {
+    selectMino.x = mouseX - SCALE / 2;
+    selectMino.y = mouseY - SCALE / 2;
+    drawMino(selectMino, SCALE);
+  }
 
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
@@ -106,12 +109,19 @@ function score_draw(field) {
   let score = field.score();
   document.getElementById("score").innerHTML = "SCORE: "+score;
 
-  document.querySelector("#modal-retry .modal-body").innerHTML ="SCORE: "+score;
-}
 
+  document.querySelector("#modal-retry .modal-body").innerHTML ="SCORE: "+score;
+
+}
 
 window.mouseClicked = () => {
   updateSelectMinoFrom(mouseX, mouseY);
+
+  pushFieldFromSelectMino();
+};
+
+function pushFieldFromSelectMino() {
+  if (selectMino === null) return;
 
   const tapPosition = setMinoFrom(mouseX, mouseY);
   if (tapPosition !== null) {
@@ -123,13 +133,26 @@ window.mouseClicked = () => {
         const fieldCell =
           field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
 
+        if (fieldCell.cellId !== -1) {
+          // すでにフィールドに置かれている
+          return;
+        }
+      }
+    }
+
+    for (let y = 0; y < selectMino.cells.length; y++) {
+      for (let x = 0; x < selectMino.cells[0].length; x++) {
+        const minoCell = selectMino.cells[y][x];
+        if (minoCell.cellId === -1) continue;
+        const fieldCell =
+          field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
         fieldCell.parentMinoId = selectMino.id;
         fieldCell.cellId = minoCell.cellId;
       }
     }
   }
   score_draw(field);
-};
+}
 
 function setMinoFrom(mx, my) {
   for (let y = 0; y < YSIZE; ++y) {
@@ -166,7 +189,11 @@ function updateSelectMinoFrom(mx, my) {
         );
 
         if (d <= VIEW_SCALE) {
-          selectMino = { ...m };
+          if (selectMino !== null && selectMino.id === m.id) {
+            selectMino = null;
+          } else {
+            selectMino = { ...m };
+          }
           return;
         }
       }
@@ -181,6 +208,14 @@ function drawMino(mino, size) {
     for (let x = 0; x < cells[y].length; ++x) {
       const cell = cells[y][x];
       if (cell.cellId === -1) continue;
+
+      image(
+        Images[imageFiles.length - 1],
+        x * size + mino.x,
+        y * size + mino.y,
+        size,
+        size
+      );
       image(
         Images[cell.cellId],
         x * size + mino.x,
@@ -207,6 +242,7 @@ function drawCell(cell, size) {
   rect(cell.x, cell.y, size);
 
   if (cell.cellId !== -1) {
+    image(Images[imageFiles.length - 1], cell.x, cell.y, size, size);
     image(Images[cell.cellId], cell.x, cell.y, size, size);
   }
   fill(255);
