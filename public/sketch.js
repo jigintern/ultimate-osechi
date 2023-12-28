@@ -13,29 +13,50 @@ const MARGIN = 1;
 
 const VIEW_SCALE = 20;
 
+class Guzai{
+    constructor(num, x, y){
+        this.guzai = num;
+        this.x = x;
+        this.y = y;
+        this.life = 2000;
+    }
+    draw(){
+
+        fill(255,255,0);
+        textSize((1-(this.life/2000)**5)*20);
+        textAlign(CENTER, CENTER);
+        text(imageFiles[this.guzai], this.x, this.y);
+        //rect(this.x, this.y, 20, 20);
+        fill(255);
+        this.y-=0.1;
+        this.life-=50;
+    }
+}
+let guzaiList = [];
 const imageFiles = [
-  "えび.png",
-  "かまぼこ.png",
-  "ごぼう.png",
-  "なます.png",
-  "伊達巻.png",
-  "錦玉子.png",
-  "金柑.png",
-  "栗きんとん.png",
-  "黒豆.png",
-  "昆布巻き.png",
-  "酢だこ.png",
-  "数の子.png",
-  "田作り.png",
-  "八幡巻き.png",
-  "蓮根.png",
-  "お皿.png",
+  "えび",
+  "かまぼこ",
+  "ごぼう",
+  "なます",
+  "伊達巻",
+  "錦玉子",
+  "金柑",
+  "栗きんとん",
+  "黒豆",
+  "昆布巻き",
+  "酢だこ",
+  "数の子",
+  "田作り",
+  "八幡巻き",
+  "蓮根",
+  "お皿",
 ];
+
 
 let Images = [];
 window.preload = () => {
   for (let i = 0; i < imageFiles.length; i++) {
-    Images[i] = loadImage("assets/" + imageFiles[i]);
+    Images[i] = loadImage("assets/" + imageFiles[i]+".png");
   }
 };
 
@@ -59,6 +80,7 @@ window.draw = () => {
   drawField();
 
   drawCombo(field.combo);
+  drawGuzais();
 
   if (selectMino !== null) {
     selectMino.x = mouseX - SCALE / 2;
@@ -68,7 +90,16 @@ window.draw = () => {
 
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
+function drawGuzais(){
+    for(let i = 0; i < guzaiList.length; i++){
+        guzaiList[i].draw();
+        guzaiList[i].life--;
+        if(guzaiList[i].life < 0){
+            guzaiList.splice(i,1);
+        }
+    }
 
+}
 function drawCombo(combo) {
   /*コンボ部分を点滅させる*/
   if (drawCombo_count < 0) return;
@@ -82,6 +113,7 @@ function drawCombo(combo) {
       let cell = field.cells[combo[i][j].y * YSIZE + combo[i][j].x];
       draw_frame(cell, SCALE, R, G, B);
     }
+ 
   }
 }
 function draw_frame(cell, size, R, G, B) {
@@ -153,7 +185,6 @@ function pushFieldFromSelectMino() {
 
         const fieldCell =
           field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
-
         if (fieldCell.cellId !== -1) {
           // すでにフィールドに置かれている
           return;
@@ -170,6 +201,10 @@ function pushFieldFromSelectMino() {
           field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
         fieldCell.parentMinoId = selectMino.id;
         fieldCell.cellId = minoCell.cellId;
+
+        //guzaiListに追加
+        let guzai = new Guzai(minoCell.cellId, fieldCell.x, fieldCell.y);
+        guzaiList.push(guzai);
       }
     }
     //2秒間だけdrawComboを呼び出す
