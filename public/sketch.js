@@ -38,7 +38,7 @@ const imageFiles = [
 let Images = [];
 window.preload = () => {
   for (let i = 0; i < imageFiles.length; i++) {
-    Images[i] = loadImage("asset/" + imageFiles[i]);
+    Images[i] = loadImage("assets/" + imageFiles[i]);
   }
 };
 
