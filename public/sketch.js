@@ -15,7 +15,7 @@ export const YSIZE = 10;
 const SCALE = 60;
 const MARGIN = 1;
 
-const VIEW_SCALE = 20;
+const VIEW_SCALE = 16;
 
 class Guzai{
     constructor(num, x, y){
@@ -68,8 +68,10 @@ let field = new Field(
   new Array(YSIZE * XSIZE).fill().map((_) => new Cell(-1, -1, -1, -1))
 );
 
+const WIDTH = (XSIZE + MARGIN * 2) * SCALE;
+const HEIGHT = YSIZE * 2 * SCALE;
 window.setup = () => {
-  const canvas = createCanvas((XSIZE + MARGIN * 2) * SCALE, YSIZE * 2 * SCALE);
+  const canvas = createCanvas(WIDTH, HEIGHT);
   canvas.parent("canvas");
   document.getElementById("score").style.marginRight = MARGIN * SCALE + "px";
 
@@ -144,21 +146,20 @@ function setupCellPosition() {
 }
 
 function setupMinoListPosition() {
-  const rowLength = 8;
-  for (let i = 0; i < minoList.length; i++) {
-    const mino = minoList[i];
-    const index = i % rowLength;
-    const padding = VIEW_SCALE;
-
-    if (index == 0) {
-      mino.x = padding;
+  const PADDING = VIEW_SCALE;
+  let x = PADDING;
+  let y = 650;
+  for (const mino of minoList) {
+    if (x + mino.w * VIEW_SCALE <= WIDTH - PADDING) {
+      mino.x = x;
+      mino.y = y;
     } else {
-      const prevMino = minoList[index - 1];
-
-      mino.x = prevMino.x + prevMino.cells[0].length * VIEW_SCALE + padding;
+      x = PADDING;
+      y += VIEW_SCALE * 4;
+      mino.y = y;
+      mino.x = x;
     }
-
-    mino.y = 650 + Math.floor(i / rowLength) * (VIEW_SCALE * 4);
+    x += (mino.w + 1) * VIEW_SCALE;
   }
 }
 
