@@ -1,13 +1,13 @@
-import { Cell, Coordinate, Field, Mino } from "./logic.js";
+import { Cell, Coordinate, Field } from "./logic.js";
 import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 import { initModal } from "./modal.js";
 import { createMinoList } from "./createMinoList.js";
 
-let selectMino = new Mino(new Cell(1, 2));
+let selectMino = null;
 let minoList = createMinoList(30);
 initModal();
-const XSIZE = 10;
-const YSIZE = 10;
+export const XSIZE = 10;
+export const YSIZE = 10;
 const SCALE = 60;
 const MARGIN = 1;
 
@@ -33,7 +33,7 @@ const imageFiles = [
 let Images = [];
 window.preload = () => {
   for (let i = 0; i < imageFiles.length; i++) {
-    Images[i] = loadImage("asset/" + imageFiles[i]);
+    Images[i] = loadImage("assets/" + imageFiles[i]);
   }
 };
 
@@ -56,9 +56,11 @@ window.draw = () => {
 
   drawField();
 
-  selectMino.x = mouseX - SCALE / 2;
-  selectMino.y = mouseY - SCALE / 2;
-  drawMino(selectMino, SCALE);
+  if (selectMino !== null) {
+    selectMino.x = mouseX - SCALE / 2;
+    selectMino.y = mouseY - SCALE / 2;
+    drawMino(selectMino, SCALE);
+  }
 
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
@@ -107,6 +109,12 @@ function score_draw(field) {
 window.mouseClicked = () => {
   updateSelectMinoFrom(mouseX, mouseY);
 
+  pushFieldFromSelectMino();
+};
+
+function pushFieldFromSelectMino() {
+  if (selectMino === null) return;
+
   const tapPosition = setMinoFrom(mouseX, mouseY);
   if (tapPosition !== null) {
     for (let y = 0; y < selectMino.cells.length; y++) {
@@ -117,12 +125,26 @@ window.mouseClicked = () => {
         const fieldCell =
           field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
 
+        if (fieldCell.cellId !== -1) {
+          // すでにフィールドに置かれている
+          return;
+        }
+      }
+    }
+
+    for (let y = 0; y < selectMino.cells.length; y++) {
+      for (let x = 0; x < selectMino.cells[0].length; x++) {
+        const minoCell = selectMino.cells[y][x];
+        if (minoCell.cellId === -1) continue;
+        const fieldCell =
+          field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
         fieldCell.parentMinoId = selectMino.id;
         fieldCell.cellId = minoCell.cellId;
       }
     }
   }
-};
+  score_draw(field);
+}
 
 function setMinoFrom(mx, my) {
   for (let y = 0; y < YSIZE; ++y) {
@@ -159,7 +181,11 @@ function updateSelectMinoFrom(mx, my) {
         );
 
         if (d <= VIEW_SCALE) {
-          selectMino = { ...m };
+          if (selectMino !== null && selectMino.id === m.id) {
+            selectMino = null;
+          } else {
+            selectMino = { ...m };
+          }
           return;
         }
       }

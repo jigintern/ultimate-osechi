@@ -1,3 +1,4 @@
+import { XSIZE,YSIZE } from "./sketch.js";
 class Cell {
   //-1,-1 空白
   //x, -2 random
@@ -10,7 +11,7 @@ class Cell {
   }
 }
 class Mino {
-  constructor(cells, x, y, id) {
+  constructor(cells, id, x, y) {
     //二次元配列
     this.cells = cells;
     this.x = x;
@@ -32,31 +33,31 @@ class Field {
     ];
     //comboしているミノのidを二次元配列に記録 例:[[1,2,3],[4,6],[5]]
     let combo = [];
-    for (let i = 0; i < this.cells.length * this.cells[0].length; i++) {
+    for (let i = 0; i < XSIZE*YSIZE; i++) {
       combo.push([]);
     }
 
-    let uf = new UnionFind(this.cells.length * this.cells[0].length);
+    let uf = new UnionFind(XSIZE * YSIZE);
 
     //近傍を見て同じCellIdの場合は連結とみなす
-    for (let y = 0; y < this.cells.length; y++) {
-      for (let x = 0; x < this.cells[0].length; x++) {
-        if (this.cells[y][x].parentMinoId == -1) continue;
+    for (let y = 0; y < YSIZE; y++) {
+      for (let x = 0; x < XSIZE; x++) {
+        if (this.cells[y*XSIZE+x].parentMinoId == -1) continue;
 
         for (let i = 0; i < 4; i++) {
           let nx = x + dxdy[i][0];
           let ny = y + dxdy[i][1];
           if (
             nx < 0 ||
-            nx >= this.cells[0].length ||
+            nx >= XSIZE ||
             ny < 0 ||
-            ny >= this.cells.length
+            ny >= YSIZE
           )
             continue;
-          if (this.cells[y][x].cellId == this.cells[ny][nx].cellId) {
+          if (this.cells[y*XSIZE+x].cellId == this.cells[ny*XSIZE+nx].cellId) {
             uf.union(
-              y * this.cells[0].length + x,
-              ny * this.cells[0].length + nx
+              y * XSIZE + x,
+              ny * XSIZE + nx
             );
           }
         }
@@ -64,12 +65,11 @@ class Field {
     }
 
     //描画やスコア計算のために連結集合を配列にまとめる
-    for (let y = 0; y < this.cells.length; y++) {
-      for (let x = 0; x < this.cells[0].length; x++) {
-        if (this.cells[y][x].parentMinoId == -1) continue;
-
-        combo[uf.find(y * this.cells[0].length + x)].push(
-          y * this.cells[0].length + x
+    for (let y = 0; y < YSIZE; y++) {
+      for (let x = 0; x < XSIZE; x++) {
+        if (this.cells[y*XSIZE+x].parentMinoId == -1) continue;
+        combo[uf.find(y * XSIZE + x)].push(
+          new Coordinate(y, x)
         );
       }
     }
@@ -81,15 +81,6 @@ class Field {
     combo.sort((a, b) => {
       return b.length - a.length;
     });
-    //comboをy,x座標に変換
-    for (let i = 0; i < combo.length; i++) {
-      for (let j = 0; j < combo[i].length; j++) {
-        combo[i][j] = new Coordinate(
-          Math.floor(combo[i][j] / this.cells[0].length),
-          combo[i][j] % this.cells[0].length
-        );
-      }
-    }
     return combo;
   }
   score() {
