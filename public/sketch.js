@@ -86,13 +86,13 @@ window.draw = () => {
   drawCombo(field.combo);
   drawGuzais();
 
+  minoList.forEach((m) => drawMino(m, VIEW_SCALE));
+
   if (selectMino !== null) {
     selectMino.x = mouseX - SCALE / 2;
     selectMino.y = mouseY - SCALE / 2;
     drawMino(selectMino, SCALE);
   }
-
-  minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
 function drawGuzais(){
     for(let i = 0; i < guzaiList.length; i++){
