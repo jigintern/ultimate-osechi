@@ -13,3 +13,14 @@ body {
     margin-left: auto;
     display: flex;
 }
+#timer {
+    font-size: xx-large;
+    margin-right: auto;
+    display: flex;
+    margin-left: 60px;
+}
+#score_timer_bar{
+    display: flex;
+    justify-content: space-between;
+    background-color: aliceblue;
+}

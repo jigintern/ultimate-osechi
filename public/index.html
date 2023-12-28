@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta charset="utf-8" />
-        <title>ようこそ、jigインターンへ！</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="style.css" />
-    </head>
-    <body>
-        <div id="container">
-            <div id="score">0</div>
-            <div id="canvas"></div>
-        </div>
-        <script type="module" src="sketch.js"></script>
-        <script type="module" src="logic.js"></script>
-    </body>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <title>ようこそ、jigインターンへ！</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="score_timer_bar">
+        <div id="timer">60sec</div>
+        <div id="score">0</div>
+      </div>
+      <div id="canvas"></div>
+    </div>
+    <script type="module" src="sketch.js"></script>
+    <script type="module" src="logic.js"></script>
+    <script type="module" src="game.js"></script>
+  </body>
 </html>
