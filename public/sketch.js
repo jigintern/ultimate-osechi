@@ -63,7 +63,10 @@ function setupMinoListPosition() {
 function score_draw(field) {
   let score = field.score();
   document.getElementById("score").innerHTML = score;
+
+  document.querySelector("#modal-retry .modal-body").innerHTML =score;
 }
+
 
 window.mouseClicked = () => {
   updateSelectMinoFrom(mouseX, mouseY);

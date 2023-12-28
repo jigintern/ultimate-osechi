@@ -1,7 +1,8 @@
 import {Cell,Mino,Field,Coordinate} from "./logic.js";
 import { showRetry } from "./modal.js";
-let time=10;
-function timer_start(){
+
+export function timer_start(){
+    let time=10;
     function timer_update(){
         time--;
         document.getElementById("timer").innerHTML=time+"sec";
@@ -13,4 +14,4 @@ function timer_start(){
     }
     let timer=setInterval(timer_update,1000);
 }
-timer_start();
+

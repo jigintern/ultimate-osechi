@@ -1,3 +1,4 @@
+import { timer_start } from "./game.js";
 //モーダルのボタンにイベントリスナーつける
 export function initModal() {
   //title
@@ -17,6 +18,8 @@ function hideTitle() {
   blackDom.classList.add("hide");
   const titleDom = document.getElementById("modal-title");
   titleDom.classList.add("hide");
+
+  timer_start();
 }
 
 export function showRetry() {
@@ -24,4 +27,6 @@ export function showRetry() {
   blackDom.classList.remove("hide");
   const titleDom = document.getElementById("modal-retry");
   titleDom.classList.remove("hide");
+
+  
 }
