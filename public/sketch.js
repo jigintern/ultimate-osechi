@@ -36,4 +36,3 @@ let testfunc = () => {
     let field = new Field(cells);
     score_draw(field);
   };
-  testfunc();
