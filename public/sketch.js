@@ -22,21 +22,7 @@ window.setup = () => {
   canvas.parent("canvas");
   document.getElementById("score").style.marginRight = MARGIN * SCALE + "px";
 
-  const rowLength = 5;
-  for (let i = 0; i < minoList.length; i++) {
-    const mino = minoList[i];
-    const index = i % rowLength;
-    if (index == 0) {
-      mino.x = 0;
-    } else {
-      const prevMino = minoList[index - 1];
-      const padding = VIEW_SCALE;
-
-      mino.x = prevMino.x + prevMino.cells[0].length * VIEW_SCALE + padding;
-    }
-
-    mino.y = 650 + Math.floor(i / rowLength) * (VIEW_SCALE * 4);
-  }
+  setupMinoListPosition();
 };
 
 window.draw = () => {
@@ -55,16 +41,36 @@ window.draw = () => {
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
 
+function setupMinoListPosition() {
+  const rowLength = 5;
+  for (let i = 0; i < minoList.length; i++) {
+    const mino = minoList[i];
+    const index = i % rowLength;
+    if (index == 0) {
+      mino.x = 0;
+    } else {
+      const prevMino = minoList[index - 1];
+      const padding = VIEW_SCALE;
+
+      mino.x = prevMino.x + prevMino.cells[0].length * VIEW_SCALE + padding;
+    }
+
+    mino.y = 650 + Math.floor(i / rowLength) * (VIEW_SCALE * 4);
+  }
+}
+
 function score_draw(field) {
   let score = field.score();
   document.getElementById("score").innerHTML = score;
 }
 
 window.mouseClicked = () => {
+  updateSelectMinoFrom(mouseX, mouseY);
+};
+
+function updateSelectMinoFrom(mx, my) {
   minoList.forEach((m) => {
     const cells = m.cells;
-    const mx = mouseX;
-    const my = mouseY;
     for (let y = 0; y < cells.length; ++y) {
       for (let x = 0; x < cells[y].length; ++x) {
         const cell = cells[y][x];
@@ -84,7 +90,7 @@ window.mouseClicked = () => {
       }
     }
   });
-};
+}
 
 function drawMino(mino, size) {
   const cells = mino.cells;
