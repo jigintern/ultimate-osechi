@@ -3,9 +3,9 @@ import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 
 let selectMino = new Mino(new Cell(1, 2));
 let minoList = [
-  new IMino(new Cell(1, 1)),
+  new IMino(new Cell(1, 0)),
   new OMino(new Cell(1, 1)),
-  new LMino(new Cell(1, 1)),
+  new LMino(new Cell(1, 2)),
   new SMino(new Cell(1, 1)),
   new TMino(new Cell(1, 1)),
 ];
@@ -16,6 +16,14 @@ const SCALE = 60;
 const MARGIN = 1;
 
 const VIEW_SCALE = 20;
+const imageFiles = ['えび.png', 'かまぼこ.png', 'ごぼう.png', 'なます.png', '伊達巻.png', '錦玉子.png', '金柑.png', '栗きんとん.png', '黒豆.png', '昆布巻き.png', '酢だこ.png', '数の子.png', '田作り.png', '八幡巻き.png', '蓮根.png'];
+
+let Images=[];
+window.preload = () => {
+    for(let i=0;i<imageFiles.length;i++){
+    Images[i] = loadImage('asset/'+imageFiles[i]);
+  }
+};
 
 window.setup = () => {
   const canvas = createCanvas((XSIZE + MARGIN * 2) * SCALE, YSIZE * 2 * SCALE);
@@ -99,10 +107,7 @@ function drawMino(mino, size) {
     for (let x = 0; x < cells[y].length; ++x) {
       const cell = cells[y][x];
       if (cell.cellId === -1) continue;
-
-      fill(100);
-      rect(x * size + mino.x, y * size + mino.y, size);
-      fill(255);
+        image(Images[cell.cellId], x * size + mino.x, y * size + mino.y, size, size);
     }
   }
 }
