@@ -2,6 +2,10 @@ import { createMinoList } from "./createMinoList.js";
 import { Cell, Coordinate, Field } from "./logic.js";
 import { initModal } from "./modal.js";
 
+if (navigator.userAgent.match(/(iPhone|iPod|Android.*Mobile)/i)) {
+  alert("パソコンからアクセスしてね");
+}
+
 let selectMino = null;
 let drawCombo_count = 0;
 let minoList = createMinoList(30);
