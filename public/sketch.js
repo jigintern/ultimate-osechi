@@ -1,4 +1,4 @@
-import { Cell, Field, Mino } from "./logic.js";
+import { Cell, Coordinate, Field, Mino } from "./logic.js";
 import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 import { initModal } from "./modal.js";
 
@@ -17,14 +17,35 @@ const SCALE = 60;
 const MARGIN = 1;
 
 const VIEW_SCALE = 20;
-const imageFiles = ['えび.png', 'かまぼこ.png', 'ごぼう.png', 'なます.png', '伊達巻.png', '錦玉子.png', '金柑.png', '栗きんとん.png', '黒豆.png', '昆布巻き.png', '酢だこ.png', '数の子.png', '田作り.png', '八幡巻き.png', '蓮根.png'];
+const imageFiles = [
+  "えび.png",
+  "かまぼこ.png",
+  "ごぼう.png",
+  "なます.png",
+  "伊達巻.png",
+  "錦玉子.png",
+  "金柑.png",
+  "栗きんとん.png",
+  "黒豆.png",
+  "昆布巻き.png",
+  "酢だこ.png",
+  "数の子.png",
+  "田作り.png",
+  "八幡巻き.png",
+  "蓮根.png",
+];
 
-let Images=[];
+let Images = [];
 window.preload = () => {
-    for(let i=0;i<imageFiles.length;i++){
-    Images[i] = loadImage('asset/'+imageFiles[i]);
+  for (let i = 0; i < imageFiles.length; i++) {
+    Images[i] = loadImage("asset/" + imageFiles[i]);
   }
 };
+
+let cellIdCount = 0;
+let field = new Field(
+  new Array(YSIZE).fill(new Array(XSIZE).fill()).map((_) => new Cell(-1, -1))
+);
 
 window.setup = () => {
   const canvas = createCanvas((XSIZE + MARGIN * 2) * SCALE, YSIZE * 2 * SCALE);
@@ -32,16 +53,14 @@ window.setup = () => {
   document.getElementById("score").style.marginRight = MARGIN * SCALE + "px";
 
   setupMinoListPosition();
+  setupCellPosition();
 };
 
 window.draw = () => {
   background(220);
   strokeWeight(1);
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      rect((i + MARGIN) * SCALE, j * SCALE + 1, SCALE, SCALE);
-    }
-  }
+
+  drawField();
 
   selectMino.x = mouseX - SCALE / 2;
   selectMino.y = mouseY - SCALE / 2;
@@ -49,6 +68,14 @@ window.draw = () => {
 
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
+
+function setupCellPosition() {
+  for (let y = 0; y < YSIZE; ++y) {
+    for (let x = 0; x < XSIZE; ++x) {
+      field.cells[y][x] = new Cell(-1, -1, (x + MARGIN) * SCALE, y * SCALE + 1);
+    }
+  }
+}
 
 function setupMinoListPosition() {
   const rowLength = 5;
@@ -78,7 +105,42 @@ function score_draw(field) {
 
 window.mouseClicked = () => {
   updateSelectMinoFrom(mouseX, mouseY);
+
+  const tapPosition = setMinoFrom(mouseX, mouseY);
+  if (tapPosition !== null) {
+    for (let y = 0; y < selectMino.cells.length; y++) {
+      for (let x = 0; x < selectMino.cells[0].length; x++) {
+        const fieldCell = field.cells[tapPosition.y + y][tapPosition.x + x];
+        const minoCell = selectMino.cells[y][x];
+
+        if (minoCell.cellId === -1) continue;
+
+        fieldCell.parentMinoId = selectMino.id;
+        fieldCell.cellId = cellIdCount;
+      }
+    }
+    cellIdCount++;
+  }
 };
+
+function setMinoFrom(mx, my) {
+  for (let y = 0; y < YSIZE; ++y) {
+    for (let x = 0; x < XSIZE; ++x) {
+      const d = dist(
+        mx,
+        my,
+        (x + MARGIN) * SCALE + SCALE / 2,
+        y * SCALE + SCALE / 2
+      );
+
+      if (d < SCALE / 2) {
+        return new Coordinate(y, x);
+      }
+    }
+  }
+
+  return null;
+}
 
 function updateSelectMinoFrom(mx, my) {
   minoList.forEach((m) => {
@@ -111,9 +173,36 @@ function drawMino(mino, size) {
     for (let x = 0; x < cells[y].length; ++x) {
       const cell = cells[y][x];
       if (cell.cellId === -1) continue;
-        image(Images[cell.cellId], x * size + mino.x, y * size + mino.y, size, size);
+      image(
+        Images[cell.cellId],
+        x * size + mino.x,
+        y * size + mino.y,
+        size,
+        size
+      );
     }
   }
+}
+
+function drawField() {
+  for (let y = 0; y < YSIZE; ++y) {
+    for (let x = 0; x < XSIZE; ++x) {
+      const cell = field.cells[y][x];
+
+      drawCell(cell, SCALE);
+    }
+  }
+}
+
+function drawCell(cell, size) {
+  fill(200);
+  rect(cell.x, cell.y, size);
+
+  if (cell.cellId !== -1) {
+    fill(10);
+    text(cell.cellId, cell.x + SCALE / 2, cell.y + SCALE / 2);
+  }
+  fill(255);
 }
 
 let testfunc = () => {
