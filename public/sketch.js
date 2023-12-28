@@ -1,8 +1,8 @@
-import { Cell, Coordinate, Field, Mino } from "./logic.js";
+import { Cell, Coordinate, Field } from "./logic.js";
 import { IMino, LMino, OMino, SMino, TMino } from "./mino.js";
 import { initModal } from "./modal.js";
 
-let selectMino = new Mino(new Cell(1, 2));
+let selectMino = null;
 let minoList = [
   new IMino(new Cell(1, 0)),
   new OMino(new Cell(1, 1)),
@@ -61,9 +61,11 @@ window.draw = () => {
 
   drawField();
 
-  selectMino.x = mouseX - SCALE / 2;
-  selectMino.y = mouseY - SCALE / 2;
-  drawMino(selectMino, SCALE);
+  if (selectMino !== null) {
+    selectMino.x = mouseX - SCALE / 2;
+    selectMino.y = mouseY - SCALE / 2;
+    drawMino(selectMino, SCALE);
+  }
 
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
 };
@@ -112,6 +114,12 @@ function score_draw(field) {
 window.mouseClicked = () => {
   updateSelectMinoFrom(mouseX, mouseY);
 
+  pushFieldFromSelectMino();
+};
+
+function pushFieldFromSelectMino() {
+  if (selectMino === null) return;
+
   const tapPosition = setMinoFrom(mouseX, mouseY);
   if (tapPosition !== null) {
     for (let y = 0; y < selectMino.cells.length; y++) {
@@ -141,7 +149,7 @@ window.mouseClicked = () => {
     }
   }
   score_draw(field);
-};
+}
 
 function setMinoFrom(mx, my) {
   for (let y = 0; y < YSIZE; ++y) {
