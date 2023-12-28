@@ -43,8 +43,8 @@ window.draw = () => {
     }
   }
 
-  selectMino.x = mouseX;
-  selectMino.y = mouseY;
+  selectMino.x = mouseX - SCALE / 2;
+  selectMino.y = mouseY - SCALE / 2;
   drawMino(selectMino, SCALE);
 
   minoList.forEach((m) => drawMino(m, VIEW_SCALE));
