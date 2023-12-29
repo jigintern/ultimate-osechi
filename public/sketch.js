@@ -15,7 +15,7 @@ export const YSIZE = 10;
 const SCALE = 60;
 const MARGIN = 1;
 
-const VIEW_SCALE = 16;
+const VIEW_SCALE = 20;
 
 class Guzai{
     constructor(num, x, y){
