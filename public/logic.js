@@ -17,6 +17,7 @@ class Mino {
     this.x = x;
     this.y = y;
     this.id = id;
+    this.w = cells.reduce((pre, i) => Math.max(pre, i.length), 0);
   }
 }
 class Field {
