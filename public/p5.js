@@ -8,6 +8,11 @@ export const createCanvas = (w, h) => {
   if (canvas) {
     throw new Exception("already created canvas");
   }
+  const fullmode = w === undefined;
+  if (fullmode) {
+    w = innerWidth;
+    h = innerHeight;
+  }
   canvas = document.createElement("canvas");
   const c = canvas;
   g = c.getContext("2d");
@@ -28,6 +33,9 @@ export const createCanvas = (w, h) => {
     mouseX = e.offsetX;
     mouseY = e.offsetY;
   };
+  if (fullmode) {
+    document.body.appendChild(c);
+  }
   return c;
 };
 
@@ -59,6 +67,9 @@ export const fill = (cr, cg, cb, ca = 1) => {
 };
 export const noFill = () => {
   g.fillStyle = color(0, 0, 0, 0);
+};
+export const noStroke = () => {
+  g.strokeStyle = color(0, 0, 0, 0);
 };
 
 export const image = (img, x, y, w, h) => {
@@ -98,15 +109,30 @@ export let frameCount = 0;
 
 const fps = 60;
 
+let tbk = performance.now();
+
 export const main = async (preload, setup, draw) => {
+  canvas = createCanvas();
   await preload();
   setup();
-  const draw2 = () => {
-    draw();
+  const draw2 = async () => {
+    const now = performance.now();
+    deltaTime = now - tbk;
+    tbk = now;
+    await draw();
     frameCount++;
-    deltaTime = frameCount * 1000 / fps;
     //requestAnimationFrame(draw2);
     setTimeout(draw2, 1000 / fps);
   };
   draw2();
+};
+
+export const push = () => {
+  g.save();
+}
+export const pop = () => {
+  g.restore();
+};
+export const translate = (dx, dy) => {
+  g.translate(dx, dy);
 };

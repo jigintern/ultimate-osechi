@@ -1,13 +1,12 @@
-import { XSIZE,YSIZE } from "./sketch.js";
+import osechi from "./osechi.js";
+
 class Cell {
   //-1,-1 空白
   //x, -2 random
-  constructor(parentMinoId, cellId, x, y) {
-    if (cellId === -2) cellId = Math.floor(Math.random() * 15);
+  constructor(parentMinoId, cellId) {
+    if (cellId === -2) cellId = Math.floor(Math.random() * osechi.length);
     this.parentMinoId = parentMinoId;
     this.cellId = cellId;
-    this.x = x;
-    this.y = y;
   }
 }
 class Mino {
@@ -21,9 +20,12 @@ class Mino {
   }
 }
 class Field {
-  constructor(cells) {
-    this.cells = cells;
-    this.combo=this.combo_check();
+  constructor(xsize, ysize) {
+    this.cells = new Array(ysize * xsize).fill().map((_) => new Cell(-1, -1, -1, -1))
+    this.combo = this.combo_check();
+    this.size = xsize * ysize;
+    this.xsize = xsize;
+    this.ysize = ysize;
   }
   combo_check() {
     let dxdy = [
@@ -35,11 +37,13 @@ class Field {
     ];
     //comboしているミノのidを二次元配列に記録 例:[[1,2,3],[4,6],[5]]
     let combo = [];
-    for (let i = 0; i < XSIZE*YSIZE; i++) {
+    for (let i = 0; i < this.size; i++) {
       combo.push([]);
     }
 
-    let uf = new UnionFind(XSIZE * YSIZE);
+    let uf = new UnionFind(this.size);
+    const XSIZE = this.xsize;
+    const YSIZE = this.ysize;
 
     //近傍を見て同じCellIdの場合は連結とみなす
     for (let y = 0; y < YSIZE; y++) {
