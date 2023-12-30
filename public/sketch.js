@@ -1,3 +1,4 @@
+import { createCanvas, background, strokeWeight, stroke, rect, fill, noFill, deltaTime, image, loadImage, mouseX, mouseY, canvas, dist, textSize, textAlign, CENTER, text, main } from "./p5.js";
 import { createMinoList } from "./createMinoList.js";
 import { Cell, Coordinate, Field } from "./logic.js";
 import { initModal } from "./modal.js";
@@ -58,9 +59,9 @@ const imageFiles = [
 
 
 let Images = [];
-window.preload = () => {
+const preload = async () => {
   for (let i = 0; i < imageFiles.length; i++) {
-    Images[i] = loadImage("assets/" + imageFiles[i]+".png");
+    Images[i] = await loadImage("assets/" + imageFiles[i] + ".png");
   }
 };
 
@@ -70,7 +71,7 @@ let field = new Field(
 
 const WIDTH = (XSIZE + MARGIN * 2) * SCALE;
 const HEIGHT = YSIZE * 2 * SCALE;
-window.setup = () => {
+const setup = () => {
   const canvas = createCanvas(WIDTH, HEIGHT);
   canvas.parent("canvas");
   document.getElementById("score").style.marginRight = MARGIN * SCALE + "px";
@@ -79,7 +80,7 @@ window.setup = () => {
   setupCellPosition();
 };
 
-window.draw = () => {
+const draw = () => {
   background(220);
   strokeWeight(1);
 
@@ -332,3 +333,5 @@ let testfunc = () => {
   let field = new Field(cells);
   score_draw(field);
 };
+
+main(preload, setup, draw);
