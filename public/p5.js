@@ -4,6 +4,8 @@ let g = null;
 export let mouseX = 0;
 export let mouseY = 0;
 
+const dpr = devicePixelRatio || 1;
+
 export const createCanvas = (w, h) => {
   if (canvas) {
     throw new Exception("already created canvas");
@@ -16,24 +18,47 @@ export const createCanvas = (w, h) => {
   canvas = document.createElement("canvas");
   const c = canvas;
   g = c.getContext("2d");
-  c.width = w;
-  c.height = h;
+  c.width = w * dpr;
+  c.height = h * dpr;
   c.style.width = w + "px";
   c.style.height = h + "px";
   c.parent = (parentid) => {
     const parent = document.getElementById(parentid);
     parent.appendChild(c);
   };
-  c.onmousedown = (e) => {
-    mouseX = e.offsetX;
-    mouseY = e.offsetY;
-    window.mouseClicked(e);
-  };
-  c.onmousemove = (e) => {
-    mouseX = e.offsetX;
-    mouseY = e.offsetY;
-  };
+  if ("touchstart" in window) {
+    c.touchstart = (e) => {
+      const t = e.touches[0];
+      mouseX = t.clientX * dpr;
+      mouseY = t.clientY * dpr;
+      window.mouseClicked(e);
+    };
+    c.ontouchmove = (e) => {
+      const t = e.touches[0];
+      mouseX = t.clientX * dpr;
+      mouseY = t.clientY * dpr;
+    };
+    c.ontouchend = (e) => {
+      const t = e.touches[0];
+      mouseX = t.clientX * dpr;
+      mouseY = t.clientY * dpr;
+      window.mouseClicked(e);
+    };
+  } else {
+    c.onmousedown = (e) => {
+      mouseX = e.offsetX * dpr;
+      mouseY = e.offsetY * dpr;
+      window.mouseClicked(e);
+    };
+    c.onmousemove = (e) => {
+      mouseX = e.offsetX * dpr;
+      mouseY = e.offsetY * dpr;
+    };
+  }
   if (fullmode) {
+    c.style.width = "100vw";
+    c.style.height = "100vh";
+    document.body.style.overflow = "hidden";
     document.body.appendChild(c);
   }
   return c;
@@ -116,10 +141,17 @@ export const main = async (preload, setup, draw) => {
   await preload();
   setup();
   const draw2 = async () => {
+    const c = canvas;
+    const flgresize = innerWidth * dpr != c.width || innerHeight * dpr != c.height;
+    if (flgresize) {
+      console.log(dpr);
+      c.width = innerWidth * dpr;
+      c.height = innerHeight * dpr;
+    }
     const now = performance.now();
     deltaTime = now - tbk;
     tbk = now;
-    await draw();
+    await draw(flgresize);
     frameCount++;
     //requestAnimationFrame(draw2);
     setTimeout(draw2, 1000 / fps);

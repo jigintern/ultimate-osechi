@@ -3,12 +3,22 @@
   --button-height: 45px;
   --modal: #dcdcdc;
   --modal-body: rgb(236, 236, 236);
+  --fontSize: calc(var(--cellWidth) * 1);
+  --fontSizeM: calc(var(--cellWidth) * .5);
+  --fontSizeS: calc(var(--cellWidth) * .4);
+}
+@media only screen and (max-width: 750px) {
+  :root {
+    --cellWidth: 30px;
+    --button-height: 30px;
+  }  
 }
 
 body {
   display: flex;
   justify-content: center;
   margin: 0;
+  font-family: sans-serif;
 }
 #container {
   display: flex;
@@ -17,12 +27,10 @@ body {
   max-width: fit-content;
 }
 #score {
-  font-size: xx-large;
   margin-left: auto;
   display: flex;
 }
 #timer {
-  font-size: xx-large;
   display: flex;
   position: absolute;
   left: 50%;
@@ -44,10 +52,18 @@ body {
   justify-content: center;
   align-items: center;
   color: var(--modal);
-  font-size: xx-large;
   font-weight: 900;
 }
 
+.modal-header {
+}
+.modal-body {
+  font-size: var(--fontSizeM);
+}
+
+#container {
+  font-size: var(--fontSize);
+}
 #modal-black {
   background-color: rgba(0, 0, 0, 0.5);
   width: 100vw;
@@ -60,8 +76,8 @@ body {
 #modal-title {
   position: fixed;
   z-index: 2;
-  width: 660px;
-  height: 500px;
+  width: 90%;
+  height: 10em;
   background-color: var(--modal);
   top: 0;
   bottom: 0;
@@ -77,7 +93,7 @@ body {
 }
 .modal-header {
   height: var(--cellWidth);
-  font-size: calc(var(--cellWidth) / 2);
+  font-size: var(--fontSizeM);
   position: absolute;
   margin-top: 10px;
   top: 0;
@@ -102,7 +118,7 @@ body {
   height: var(--button-height);
   width: calc(var(--cellWidth) * 2);
   border-radius: 10px;
-  font-size: large;
+  font-size: var(--fontSizeM);
   margin-bottom: 10px;
   background-color: var(--modal-body);
   border-color: var(--modal);
@@ -114,14 +130,13 @@ body {
 #modal-retry {
   position: fixed;
   z-index: 2;
-  width: 660px;
-  height: 170px;
+  width: 90%;
+  height: 5em;
   background-color: var(--modal);
-  top: 0;
-  bottom: 0;
+  bottom: 5%;
   right: 0;
   left: 0;
-  margin: 695px auto;
+  margin: auto auto;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -133,8 +148,8 @@ body {
 #modal-help {
   position: fixed;
   z-index: 2;
-  width: 660px;
-  height: 750px;
+  width: 90%;
+  height: 14em;
   background-color: var(--modal);
   top: 0;
   bottom: 0;
@@ -147,6 +162,12 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px;
+}
+#modal-help .modal-body {
+  font-size: var(--fontSizeS);
+}
+#modal-help .modal-body img {
+  width: var(--fontSizeS);
 }
 .help-row {
   display: flex;

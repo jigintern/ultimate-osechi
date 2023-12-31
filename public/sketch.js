@@ -4,10 +4,6 @@ import { Cell, Coordinate, Field } from "./logic.js";
 import { showTitle, showHelp, showRetry } from "./modal.js";
 import osechi from "./osechi.js";
 
-if (navigator.userAgent.match(/(iPhone|iPod|Android.*Mobile)/i)) {
-  alert("パソコンからアクセスしてね");
-}
-
 const timelimit = 60;
 
 let selectMino = null;
@@ -17,10 +13,10 @@ let minoList = null;
 const XSIZE = 10;
 const YSIZE = 10;
 
-const SCALE = 60;
-const MARGIN = 1;
-const MARGIN_X = SCALE;
-const MARGIN_Y = SCALE / 2;
+//const SCALE = 60;
+//const MARGIN = 1;
+//const MARGIN_X = SCALE;
+//const MARGIN_Y = SCALE / 2;
 
 const VIEW_SCALE = 20;
 
@@ -34,7 +30,7 @@ class Guzai{
     draw(){
 
         fill(255,255,0);
-        textSize((1-(this.life/2000)**5)*20);
+        textSize((1-(this.life/2000)**5)*20 * 2);
         textAlign(CENTER, CENTER);
         text(osechi[this.guzai], this.x, this.y);
         //rect(this.x, this.y, 20, 20);
@@ -56,20 +52,15 @@ const preload = async () => {
 
 const field = new Field(XSIZE, YSIZE);
 
-const WIDTH = (XSIZE + MARGIN * 2) * SCALE;
-//const HEIGHT = YSIZE * 2 * SCALE;
-
-const reset = () => {
+const reset = (marginx, marginySelect, width, viewScale) => {
   selectMino = null;
   drawCombo_count = 0;
   minoList = createMinoList(30);
-  setupMinoListPosition();
+  setupMinoListPosition(marginx, marginySelect, width, viewScale);
   setupCellPosition();
   starttime = performance.now();
-
 };
 const setup = () => {
-  reset();
 };
 
 const S_TITLE = 0;
@@ -80,53 +71,78 @@ let state = S_TITLE;
 
 let starttime = null;
 
-const HEIGHT_HEADER = 50;
-
-const drawHeader = (width) => {
-  const h = HEIGHT_HEADER;
+const drawHeader = (offx, offy, width, height) => {
+  const h = height;
+  const ih = h * (40 / 50);
+  const iy = (h - ih) / 2;
+  const fonth = h * (30 / 50);
   fill(240);
   noStroke();
-  rect(0, 0, width, h);
-  const ix = 80;
-  image(imageBase, ix, 5, 40, 40);
-  textSize(30);
+  rect(0, 0, canvas.width, h);
+  const ix = offx + ih * 2;
+  image(imageBase, ix, iy, ih, ih);
+  textSize(fonth);
   textAlign(CENTER, CENTER);
   fill(230);
-  text("?", ix + 40 / 2, 5 + 40 / 2);
+  text("?", ix + ih / 2, offy + (h - ih) / 2 + ih / 2);
   fill(0);
   const time = starttime == null ? timelimit : timelimit - Math.floor((performance.now() - starttime) / 1000);
-  text(time + "sec", 320, 25);
-  text("SCORE: " + field.score(), 500, 25);
+  text(time + "sec", offx + width / 2, h / 2);
+  text("SCORE: " + field.score(), offx + width * .8, h / 2);
   return h;
 };
-const draw = async () => {  
+const HEIGHT_RATIO_FIELD = 0.7;
+
+const draw = async (flgresize) => {
   background(220);
-  const width = innerWidth;
-  const hh = drawHeader(width);
+  const scale = Math.min(canvas.height / (YSIZE + 5 + 1), canvas.width / (XSIZE + 2));
+  const heightHeader = scale;
+  const heightField = scale * (YSIZE + 1);
+  const width = scale * (XSIZE + 2);
+  const marginx = (canvas.width - width) / 2;
+  const heightSelect = canvas.height - heightField;
+  const viewScale = width / 40;
+  const marginySelect = heightHeader + heightField;
 
-  drawField(0, hh);
+  if (state == S_TITLE) {
+    reset(marginx, marginySelect, width, viewScale);
+  }
+  const hh = drawHeader(marginx, 0, width, heightHeader);
 
-  drawCombo(field.combo);
+  drawField(marginx, hh, scale);
+
+  drawCombo(field.combo, scale);
   drawGuzais();
 
-  minoList.forEach((m) => drawMino(m, VIEW_SCALE));
-
+  if (flgresize) {
+    setupMinoListPosition(marginx, marginySelect, width, viewScale);
+  }
+  minoList.forEach((m) => drawMino(m, viewScale));
+  
   if (selectMino !== null) {
-    selectMino.x = mouseX - SCALE / 2;
-    selectMino.y = mouseY - SCALE / 2;
-    drawMino(selectMino, SCALE);
+    selectMino.x = mouseX - scale / 2;
+    selectMino.y = mouseY - scale / 2;
+    drawMino(selectMino, scale);
   }
 
   if (state == S_TITLE) {
     await showTitle();
-    reset();
+    starttime = performance.now();
     state = S_MAIN;
   }
   if (performance.now() > starttime + timelimit * 1000) {
     await showRetry(field.score());
-    reset();
+    reset(marginx, heightHeader + heightField, width, viewScale);
     state = S_MAIN;
   }
+
+  window.mouseClicked = async (e) => {
+    if (e.target !== canvas) return;
+    if (mouseY < heightHeader) await showHelp();
+    updateSelectMinoFrom(mouseX, mouseY, viewScale);
+
+    pushFieldFromSelectMino(scale, marginx, heightHeader);
+  };
 };
 function drawGuzais(){
     for(let i = 0; i < guzaiList.length; i++){
@@ -138,7 +154,7 @@ function drawGuzais(){
     }
 
 }
-function drawCombo(combo) {
+function drawCombo(combo, scale) {
   /*コンボ部分を点滅させる*/
   if (drawCombo_count < 0) return;
   drawCombo_count -= deltaTime;
@@ -149,17 +165,17 @@ function drawCombo(combo) {
     let B = 0;
     for (let j = 0; j < combo[i].length; j++) {
       const cell = field.cells[combo[i][j].y * YSIZE + combo[i][j].x];
-      draw_frame(cell, SCALE, R, G, B);
+      draw_frame(cell, scale, R, G, B);
     }
  
   }
 }
 function draw_frame(cell, size, R, G, B) {
   stroke(R, G, B, Math.sin(frameCount / 6) * 100 + 100); //
-  strokeWeight(3);
+  strokeWeight(6);
   noFill();
   rect(cell.x, cell.y, size);
-  strokeWeight(1);
+  strokeWeight(2);
   stroke(0);
   fill(255);
 }
@@ -175,44 +191,29 @@ function setupCellPosition() {
   }
 }
 
-function setupMinoListPosition() {
-  const PADDING = VIEW_SCALE;
-  let x = PADDING;
-  let y = 650 + HEIGHT_HEADER;
+function setupMinoListPosition(marginx, marginy, width, viewScale) {
+  const PADDING = viewScale;
+  const offx = PADDING + marginx;
+  let x = offx;
+  let y = marginy;
   for (const mino of minoList) {
-    if (x + mino.w * VIEW_SCALE <= WIDTH - PADDING) {
+    if (x + mino.w * viewScale <= marginx + width - PADDING) {
       mino.x = x;
       mino.y = y;
     } else {
-      x = PADDING;
-      y += VIEW_SCALE * 4;
+      x = offx;
+      y += viewScale * 4;
       mino.y = y;
       mino.x = x;
     }
-    x += (mino.w + 1) * VIEW_SCALE;
+    x += (mino.w + 1) * viewScale;
   }
 }
 
-function score_draw(field) {
-  let score = field.score();
-  document.getElementById("score").innerHTML = "SCORE: " + score;
-
-  document.querySelector("#modal-retry .modal-body").innerHTML =
-    "SCORE: " + score;
-}
-
-window.mouseClicked = async (e) => {
-  if (e.target !== canvas) return;
-  if (mouseY < HEIGHT_HEADER) await showHelp();
-  updateSelectMinoFrom(mouseX, mouseY);
-
-  pushFieldFromSelectMino();
-};
-
-function pushFieldFromSelectMino() {
+function pushFieldFromSelectMino(scale, marginx, marginy) {
   if (selectMino === null) return;
 
-  const tapPosition = setMinoFrom(mouseX, mouseY);
+  const tapPosition = setMinoFrom(mouseX, mouseY, scale, marginx, marginy);
   if (tapPosition !== null) {
     for (let y = 0; y < selectMino.cells.length; y++) {
       for (let x = 0; x < selectMino.cells[0].length; x++) {
@@ -255,17 +256,17 @@ function pushFieldFromSelectMino() {
   //score_draw(field);
 }
 
-function setMinoFrom(mx, my) {
+function setMinoFrom(mx, my, scale, marginx, marginy) {
   for (let y = 0; y < YSIZE; ++y) {
     for (let x = 0; x < XSIZE; ++x) {
       const d = dist(
-        mx,
-        my,
-        MARGIN_X + x * SCALE + SCALE / 2,
-        HEIGHT_HEADER + MARGIN_Y + y * SCALE + SCALE / 2
+        mx - scale / 2,
+        my - scale / 2,
+        marginx + x * scale + scale,
+        marginy + y * scale + scale / 2
       );
 
-      if (d < SCALE / 2) {
+      if (d < scale / 2) {
         return new Coordinate(y, x);
       }
     }
@@ -274,7 +275,7 @@ function setMinoFrom(mx, my) {
   return null;
 }
 
-function updateSelectMinoFrom(mx, my) {
+function updateSelectMinoFrom(mx, my, viewScale) {
   minoList.forEach((m) => {
     const cells = m.cells;
     for (let y = 0; y < cells.length; ++y) {
@@ -285,11 +286,11 @@ function updateSelectMinoFrom(mx, my) {
         const d = dist(
           mx,
           my,
-          x * VIEW_SCALE + m.x + VIEW_SCALE / 2,
-          y * VIEW_SCALE + m.y + VIEW_SCALE / 2
+          x * viewScale + m.x + viewScale / 2,
+          y * viewScale + m.y + viewScale / 2
         );
 
-        if (d <= VIEW_SCALE) {
+        if (d <= viewScale) {
           if (selectMino !== null && selectMino.id === m.id) {
             selectMino = null;
           } else {
@@ -326,28 +327,28 @@ function drawMino(mino, size) {
   }
 }
 
-function drawField(offx, offy) {
-  strokeWeight(30);
+function drawField(offx, offy, scale) {
+  strokeWeight(scale * .5);
   stroke(5);
-  rect(offx + MARGIN * SCALE, offy + (MARGIN / 2) * SCALE, XSIZE * SCALE, YSIZE * SCALE);
+  rect(offx + scale, offy + scale / 2, XSIZE * scale, YSIZE * scale);
   for (let y = 0; y < YSIZE; ++y) {
     for (let x = 0; x < XSIZE; ++x) {
       const cell = field.cells[y * YSIZE + x];
-      const cx = offx + MARGIN_X + x * SCALE;
-      const cy = offy + MARGIN_Y + y * SCALE;
-      drawCell(cell, cx, cy, SCALE);
+      const cx = offx + scale + x * scale;
+      const cy = offy + scale / 2 + y * scale;
+      drawCell(cell, cx, cy, scale);
     }
   }
 }
 
 function drawCell(cell, x, y, size) {
   fill(130, 10, 0);
-  strokeWeight(2);
+  strokeWeight(4);
   stroke(10);
   rect(x, y, size);
   cell.x = x;
   cell.y = y;
-  strokeWeight(1);
+  strokeWeight(2);
   stroke(0);
 
   if (cell.cellId !== -1) {
