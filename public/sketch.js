@@ -214,9 +214,11 @@ function pushFieldFromSelectMino(scale, marginx, marginy) {
         const minoCell = selectMino.cells[y][x];
         if (minoCell.cellId === -1) continue;
 
-        const fieldCell =
-          field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
-        if (!fieldCell || fieldCell.cellId !== -1) {
+        const cx = tapPosition.x + x;
+        const cy = tapPosition.y + y;
+        if (cx < 0 || cx >= XSIZE || cy < 0 || cy >= YSIZE) return;
+        const fieldCell = field.cells[cy * YSIZE + cx];
+        if (fieldCell.cellId !== -1) {
           // すでにフィールドに置かれている
           return;
         }
@@ -228,8 +230,9 @@ function pushFieldFromSelectMino(scale, marginx, marginy) {
       for (let x = 0; x < selectMino.cells[0].length; x++) {
         const minoCell = selectMino.cells[y][x];
         if (minoCell.cellId === -1) continue;
-        const fieldCell =
-          field.cells[(tapPosition.y + y) * YSIZE + tapPosition.x + x];
+        const cx = tapPosition.x + x;
+        const cy = tapPosition.y + y;
+        const fieldCell = field.cells[cy * YSIZE + cx];
         fieldCell.parentMinoId = selectMino.id;
         fieldCell.cellId = minoCell.cellId;
 
