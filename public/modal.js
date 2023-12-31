@@ -1,81 +1,71 @@
-import { timer_start } from "./game.js";
-//モーダルのボタンにイベントリスナーつける
-export function initModal() {
-  //title
-  document
-    .querySelector("#modal-title button")
-    .addEventListener("click", hideTitle);
-
-  document
-    .querySelector("#modal-retry button")
-    .addEventListener("click", () => {
-      location.reload();
+export const showTitle = async () => {
+  return new Promise(resolve => {
+    const btn = document.querySelector("#modal-title button");
+    btn.addEventListener("click", () => {
+      const blackDom = document.getElementById("modal-black");
+      blackDom.classList.add("hide");
+      const titleDom = document.getElementById("modal-title");
+      titleDom.classList.add("hide");
+      resolve()
     });
-  //help
-  initHelp();
-  document.getElementById("help").addEventListener("click", showHelp);
-  document
-    .querySelector("#modal-help button")
-    .addEventListener("click", hideHelp);
-}
+  });
+};
 
-function hideTitle() {
-  const blackDom = document.getElementById("modal-black");
-  blackDom.classList.add("hide");
-  const titleDom = document.getElementById("modal-title");
-  titleDom.classList.add("hide");
+export const showRetry = async (score) => {
+  return new Promise(resolve => {
+    const blackDom = document.getElementById("modal-black");
+    blackDom.classList.remove("hide");
+    const titleDom = document.getElementById("modal-retry");
+    titleDom.classList.remove("hide");
 
-  timer_start();
-}
+    const body = document.querySelector("#modal-retry .modal-body");
+    body.textContent = "SCORE: " + score;
 
-export function showRetry() {
-  const blackDom = document.getElementById("modal-black");
-  blackDom.classList.remove("hide");
-  const titleDom = document.getElementById("modal-retry");
-  titleDom.classList.remove("hide");
-}
+    const btn = document.querySelector("#modal-retry button");
+    btn.addEventListener("click", () => {
+      const blackDom = document.getElementById("modal-black");
+      blackDom.classList.add("hide");
+      const titleDom = document.getElementById("modal-retry");
+      titleDom.classList.add("hide");
+      resolve();
+    });
+  });
+};
 
-function initHelp() {
-  const type = [
-    "えび",
-    "かまぼこ",
-    "ごぼう",
-    "なます",
-    "伊達巻",
-    "錦玉子",
-    "金柑",
-    "栗きんとん",
-    "黒豆",
-    "昆布巻き",
-    "酢だこ",
-    "数の子",
-    "田作り",
-    "八幡巻き",
-    "蓮根",
-  ];
+const initHelp = (types) => {
   const body = document.querySelector("#modal-help .modal-body");
-  type.forEach((type) => {
+  if (body.children.length > 0) {
+    return;
+  }
+  types.forEach((type) => {
     const row = document.createElement("div");
     row.classList.add("help-row");
     const img = document.createElement("img");
-    img.src = "./assets/" + type + ".png";
+    img.src = "./assets/" + type.image;
     img.style.marginRight = "5px";
     const name = document.createElement("div");
-    name.innerHTML = type;
+    name.innerHTML = type.name;
     row.appendChild(img);
     row.appendChild(name);
     body.appendChild(row);
   });
-}
-function showHelp() {
-  const blackDom = document.getElementById("modal-black");
-  blackDom.classList.remove("hide");
-  const titleDom = document.getElementById("modal-help");
-  titleDom.classList.remove("hide");
-}
-function hideHelp() {
-  const blackDom = document.getElementById("modal-black");
-  blackDom.classList.add("hide");
-  const titleDom = document.getElementById("modal-help");
-  titleDom.classList.add("hide");
-}
+};
+
+export const showHelp = async (types) => {
+  initHelp(types);
+  return new Promise(resolve => {
+    const blackDom = document.getElementById("modal-black");
+    blackDom.classList.remove("hide");
+    const titleDom = document.getElementById("modal-help");
+    titleDom.classList.remove("hide");
+
+    const btn = document.querySelector("#modal-help button");
+    btn.addEventListener("click", () => {
+      const blackDom = document.getElementById("modal-black");
+      blackDom.classList.add("hide");
+      const titleDom = document.getElementById("modal-help");
+      titleDom.classList.add("hide");
+      resolve()
+    });
+  });
+};
