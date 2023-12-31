@@ -1,24 +1,17 @@
-import { background, strokeWeight, stroke, rect, fill, noFill, deltaTime, image, loadImage, mouseX, mouseY, canvas, dist, textSize, textAlign, CENTER, text, main, noStroke, frameCount } from "./p5.js";
+import { background, strokeWeight, stroke, rect, fill, noFill, deltaTime, image, loadImage, mouseX, mouseY, canvas, dist, textSize, textAlign, CENTER, text, main, noStroke, frameCount } from "https://code4fukui.github.io/p5.es/p5.js";
 import { createMinoList } from "./createMinoList.js";
 import { Cell, Coordinate, Field } from "./logic.js";
 import { showTitle, showHelp, showRetry } from "./modal.js";
 import osechi from "./osechi.js";
+
+const XSIZE = 10;
+const YSIZE = 10;
 
 const timelimit = 60;
 
 let selectMino = null;
 let drawCombo_count = 0;
 let minoList = null;
-
-const XSIZE = 10;
-const YSIZE = 10;
-
-//const SCALE = 60;
-//const MARGIN = 1;
-//const MARGIN_X = SCALE;
-//const MARGIN_Y = SCALE / 2;
-
-const VIEW_SCALE = 20;
 
 class Guzai{
     constructor(num, x, y){
@@ -32,7 +25,7 @@ class Guzai{
         fill(255,255,0);
         textSize((1-(this.life/2000)**5)*20 * 2);
         textAlign(CENTER, CENTER);
-        text(osechi[this.guzai], this.x, this.y);
+        text(osechi[this.guzai].name, this.x, this.y);
         //rect(this.x, this.y, 20, 20);
         fill(255);
         this.y-=0.1;
@@ -45,9 +38,9 @@ let Images = [];
 let imageBase = null;
 const preload = async () => {
   for (let i = 0; i < osechi.length; i++) {
-    Images[i] = await loadImage("assets/" + osechi[i] + ".png");
+    Images[i] = await loadImage("assets/" + osechi[i].image);
   }
-  imageBase = await loadImage("assets/お皿.png");
+  imageBase = await loadImage("assets/plate.png");
 };
 
 const field = new Field(XSIZE, YSIZE);
@@ -101,7 +94,8 @@ const draw = async (flgresize) => {
   const width = scale * (XSIZE + 2);
   const marginx = (canvas.width - width) / 2;
   const heightSelect = canvas.height - heightField;
-  const viewScale = width / 40;
+  const r = heightSelect / width;
+  const viewScale = r < .7 ? width / 40 : r < 1.2 ? width / 30 : width / 25;
   const marginySelect = heightHeader + heightField;
 
   if (state == S_TITLE) {
@@ -138,7 +132,7 @@ const draw = async (flgresize) => {
 
   window.mouseClicked = async (e) => {
     if (e.target !== canvas) return;
-    if (mouseY < heightHeader) await showHelp();
+    if (mouseY < heightHeader) await showHelp(osechi);
     updateSelectMinoFrom(mouseX, mouseY, viewScale);
 
     pushFieldFromSelectMino(scale, marginx, heightHeader);
@@ -358,4 +352,6 @@ function drawCell(cell, x, y, size) {
   fill(255);
 }
 
-main(preload, setup, draw);
+await preload();
+setup();
+main(draw);

@@ -1,17 +1,4 @@
-export default [
-  "えび",
-  "かまぼこ",
-  "ごぼう",
-  "なます",
-  "伊達巻",
-  "錦玉子",
-  "金柑",
-  "栗きんとん",
-  "黒豆",
-  "昆布巻き",
-  "酢だこ",
-  "数の子",
-  "田作り",
-  "八幡巻き",
-  "蓮根",
-];
+import { CSV } from "https://js.sabae.cc/CSV.js";
+
+const osechi = await CSV.fetchJSON("./osechi.csv");
+export default osechi;

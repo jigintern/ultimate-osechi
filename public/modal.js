@@ -1,5 +1,3 @@
-import types from "./osechi.js";
-
 export const showTitle = async () => {
   return new Promise(resolve => {
     const btn = document.querySelector("#modal-title button");
@@ -34,24 +32,27 @@ export const showRetry = async (score) => {
   });
 };
 
-const initHelp = () => {
+const initHelp = (types) => {
   const body = document.querySelector("#modal-help .modal-body");
+  if (body.children.length > 0) {
+    return;
+  }
   types.forEach((type) => {
     const row = document.createElement("div");
     row.classList.add("help-row");
     const img = document.createElement("img");
-    img.src = "./assets/" + type + ".png";
+    img.src = "./assets/" + type.image;
     img.style.marginRight = "5px";
     const name = document.createElement("div");
-    name.innerHTML = type;
+    name.innerHTML = type.name;
     row.appendChild(img);
     row.appendChild(name);
     body.appendChild(row);
   });
-}
-initHelp();
+};
 
-export const showHelp = async () => {
+export const showHelp = async (types) => {
+  initHelp(types);
   return new Promise(resolve => {
     const blackDom = document.getElementById("modal-black");
     blackDom.classList.remove("hide");
