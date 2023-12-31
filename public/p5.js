@@ -168,3 +168,13 @@ export const pop = () => {
 export const translate = (dx, dy) => {
   g.translate(dx, dy);
 };
+
+const c = document.documentElement;
+const touchHandler = e => {
+  if (e.touches.length > 1) {
+    e.preventDefault();
+  }
+};
+c.addEventListener("touchstart", touchHandler, { passive: false });
+//c.addEventListener("touchmove", function(e) { e.preventDefault(); }, { passive: false });
+//c.addEventListener("touchend", function(e) { e.preventDefault(); }, { passive: false });
